@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu Réception de Mariage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fef6f0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #a05a2c;
+        }
+        h2 {
+            margin-top: 30px;
+        }
+        label {
+            display: block;
+            margin: 5px 0;
+        }
+        input[type="number"] {
+            width: 50px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #a05a2c;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Bienvenue au Mariage 🎉</h1>
+<form id="menuForm">
+    <h2>ENTRÉE</h2>
+    <label><input type="radio" name="entree" value="Salade César"> Salade César</label>
+
+    <h2>PLAT</h2>
+    <label><input type="radio" name="plat" value="Riz noir"> Riz noir</label>
+    <label><input type="radio" name="plat" value="Riz national"> Riz national</label>
+
+    <h2>VIANDE</h2>
+    <label><input type="radio" name="viande" value="Cabrit"> Cabrit</label>
+    <label><input type="radio" name="viande" value="Poulet"> Poulet</label>
+    <label><input type="radio" name="viande" value="Porc"> Porc</label>
+
+    <h2>ACCOMPAGNEMENT</h2>
+    <label><input type="checkbox" name="accompagnement" value="Banane pesée"> Banane pesée</label>
+    <label><input type="checkbox" name="accompagnement" value="Pikliz"> Pikliz</label>
+    <label><input type="checkbox" name="accompagnement" value="Salade russe"> Salade russe</label>
+
+    <h2>BOISSONS</h2>
+    <label><input type="radio" name="boisson" value="Eau plate/gazeuse"> Eau plate/gazeuse</label>
+    <label><input type="radio" name="boisson" value="Thé glacé"> Thé glacé</label>
+    <label><input type="radio" name="boisson" value="Multifruit"> Multifruit</label>
+    <label><input type="radio" name="boisson" value="Coca-Cola"> Coca-Cola</label>
+
+    <h2>VIN</h2>
+    <label><input type="radio" name="vin" value="Vin rouge"> Vin rouge</label>
+    <label><input type="radio" name="vin" value="Vin blanc"> Vin blanc</label>
+
+    <p>Numéro de table : <input type="number" name="table" required></p>
+
+    <button type="submit">Envoyer la commande</button>
+</form>
+
+<p id="confirmation"></p>
+
+<script>
+document.getElementById("menuForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const data = new FormData(form);
+    const payload = {
+        entree: data.get("entree"),
+        plat: data.get("plat"),
+        viande: data.get("viande"),
+        accompagnement: data.getAll("accompagnement"),
+        boisson: data.get("boisson"),
+        vin: data.get("vin"),
+        table: data.get("table")
+    };
+
+    fetch("http://localhost:5000/commande", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.text())
+    .then(msg => {
+        document.getElementById("confirmation").innerText = "✅ " + msg;
+        form.reset();
+    })
+    .catch(err => {
+        document.getElementById("confirmation").innerText = "❌ Erreur d'envoi.";
+    });
+});
+</script>
+
+</body>
+</html>

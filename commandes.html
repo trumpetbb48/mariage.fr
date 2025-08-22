@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Commandes Cuisine</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #fffaf4;
+            padding: 20px;
+        }
+        h1 {
+            color: #8b0000;
+        }
+        .commande {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+
+<h1>📋 Commandes reçues</h1>
+<div id="commandes"></div>
+
+<script>
+    async function chargerCommandes() {
+        const res = await fetch("http://localhost:5000/commandes");
+        const commandes = await res.json();
+        const container = document.getElementById("commandes");
+        container.innerHTML = '';
+
+        commandes.forEach(c => {
+            const div = document.createElement("div");
+            div.className = "commande";
+            div.innerHTML = `
+                <strong>Table ${c.table}</strong><br>
+                Entrée: ${c.entree || "—"}<br>
+                Plat: ${c.plat || "—"}<br>
+                Viande: ${c.viande || "—"}<br>
+                Accompagnement: ${c.accompagnement.join(', ') || "—"}<br>
+                Boisson: ${c.boisson || "—"}<br>
+                Vin: ${c.vin || "—"}
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    setInterval(chargerCommandes, 3000); // actualisation auto toutes les 3 sec
+    chargerCommandes();
+</script>
+
+</body>
+</html>
